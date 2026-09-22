@@ -14,9 +14,9 @@ create table if not exists perfiles (
 -- crea el perfil automáticamente al crear cada usuario;
 -- el usuario cuyo correo coincida aquí queda como administrador:
 create or replace function crear_perfil() returns trigger
-language plpgsql security definer as $$
+language plpgsql security definer set search_path = public as $$
 begin
-  insert into perfiles (id, nombre, admin)
+  insert into public.perfiles (id, nombre, admin)
   values (new.id,
           coalesce(new.raw_user_meta_data->>'nombre', split_part(new.email,'@',1)),
           new.email = 'jmarcosa@gmail.com')   -- administrador
@@ -28,8 +28,8 @@ create trigger tg_crear_perfil after insert on auth.users
   for each row execute function crear_perfil();
 
 create or replace function es_admin() returns boolean
-language sql stable security definer as
-$$ select coalesce((select admin from perfiles where id = auth.uid()), false) $$;
+language sql stable security definer set search_path = public as
+$$ select coalesce((select admin from public.perfiles where id = auth.uid()), false) $$;
 
 -- ---------- marcas del revisor (una por referencia: bloque, línea o página)
 create table if not exists marcas (
