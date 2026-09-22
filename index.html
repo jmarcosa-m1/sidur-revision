@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Revisión Sidur Maguén David</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;500;600&family=Assistant:wght@400;600;700&display=swap">
+<style>
+:root{
+  --paper:#FBF9F3; --ink:#1C1E24; --bar:#133A52; --bar-ink:#F3EFE6; --brass:#96671C;
+  --inst:#7A5418; --muted:#6B6F78; --rule:#E4DFD2; --sheet:#FFFFFF; --chip:#EEF3F6;
+  --ok:#2E7D4F; --ok-bg:#E9F4EC; --err:#B4362E; --err-bg:#F9ECEA; --fix:#B07C1F; --fix-bg:#F8F1E2;
+  --lib:#133A52; --lib-bg:#E8EFF4; --sombra:0 2px 10px rgba(20,25,35,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#121417; --ink:#E9E5DC; --bar:#0D2A3C; --bar-ink:#EDE7DA; --brass:#D2A75A;
+    --inst:#D9B77B; --muted:#9AA0A8; --rule:#2A2E35; --sheet:#1B1E23; --chip:#1F2A33;
+    --ok:#6FBF8F; --ok-bg:#17281D; --err:#E08A80; --err-bg:#2E1B18; --fix:#D9B05C; --fix-bg:#2A2214;
+    --lib:#8FB6D0; --lib-bg:#152430; --sombra:0 2px 10px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:"Assistant",system-ui,sans-serif;font-size:16px;line-height:1.45;min-height:100vh}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+[hidden]{display:none!important}
+
+header.bar{position:sticky;top:0;z-index:20;background:var(--bar);color:var(--bar-ink);padding:12px 18px;box-shadow:var(--sombra)}
+.bar-fila{display:flex;align-items:center;gap:10px}
+.bar h1{margin:0;font-size:1.05rem;font-weight:700;flex:1}
+.quien{flex:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:var(--bar-ink);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:700;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .sub{font-size:.8rem;opacity:.85;margin-top:2px}
+.bar .prog{height:5px;background:rgba(255,255,255,.18);border-radius:3px;margin-top:8px;overflow:hidden}
+.bar .prog i{display:block;height:100%;background:var(--brass);border-radius:3px;transition:width .3s}
+
+main{max-width:880px;margin:0 auto;padding:16px 16px 90px}
+.aviso{background:var(--chip);border:1px solid var(--rule);border-radius:10px;padding:10px 14px;font-size:.88rem;color:var(--muted);margin-bottom:14px}
+.aviso.malo{background:var(--err-bg);border-color:var(--err);color:var(--ink)}
+.aviso b{color:var(--ink)}
+h3.grupo{margin:22px 0 8px;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+
+/* login */
+.login{max-width:380px;margin:8vh auto;background:var(--sheet);border:1px solid var(--rule);border-radius:14px;padding:26px;box-shadow:var(--sombra)}
+.login h2{margin:0 0 4px;font-size:1.3rem}
+.login p{margin:0 0 16px;color:var(--muted);font-size:.9rem}
+.login label{display:block;font-size:.82rem;color:var(--muted);margin:12px 0 4px}
+.login input{width:100%;border:1px solid var(--rule);border-radius:8px;padding:10px;background:var(--paper);color:var(--ink);font:inherit}
+.login .btn{width:100%;margin-top:18px}
+.login .error{color:var(--err);font-size:.85rem;margin-top:10px;min-height:1.2em}
+
+/* tarjetas de sección */
+.seccion-card{width:100%;text-align:right;direction:rtl;background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;color:var(--ink)}
+.seccion-card:hover{border-color:var(--brass)}
+.sc-main{flex:1;min-width:0}
+.sc-nombre{font-family:"Noto Serif Hebrew",serif;font-size:1.15rem;font-weight:600}
+.sc-es{font-size:.82rem;color:var(--muted);direction:ltr;text-align:left}
+.sc-prog{direction:ltr;height:6px;background:var(--rule);border-radius:3px;margin-top:8px;overflow:hidden;display:flex}
+.sc-prog i{height:100%}
+.p-ok{background:var(--ok)} .p-fix{background:var(--fix)} .p-err{background:var(--err)}
+.sc-num{font-size:.78rem;color:var(--muted);margin-top:4px;direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
+.chip{flex:none;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.02em}
+.chip.pend{background:var(--chip);color:var(--muted)} .chip.curso{background:var(--fix-bg);color:var(--fix)}
+.chip.lista{background:var(--ok-bg);color:var(--ok)} .chip.lib{background:var(--lib-bg);color:var(--lib)}
+
+.volver{background:none;border:0;color:var(--brass);font-weight:700;padding:6px 0;margin-bottom:4px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:6px 0 14px}
+.sec-head h2{margin:0;font-family:"Noto Serif Hebrew",serif;font-size:1.5rem;flex:1;direction:rtl;text-align:right}
+.btn{border:1px solid var(--rule);background:var(--sheet);color:var(--ink);border-radius:9px;padding:8px 14px;font-weight:600}
+.btn.primario{background:var(--bar);border-color:var(--bar);color:var(--bar-ink)}
+.btn.liberar{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.filtro{font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.lib-banner{background:var(--lib-bg);border:1px solid var(--lib);color:var(--ink);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.9rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.firma{font-weight:400;color:var(--muted)}
+
+/* bloques y líneas */
+.bloque{background:var(--sheet);border:1px solid var(--rule);border-inline-start:4px solid var(--rule);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.bloque[data-estado="aprobado"]{border-inline-start-color:var(--ok)}
+.bloque[data-estado="corregido"]{border-inline-start-color:var(--fix)}
+.bloque[data-estado="error"]{border-inline-start-color:var(--err)}
+.b-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.74rem;color:var(--muted);margin-bottom:8px}
+.b-meta .id{font-family:ui-monospace,monospace;background:var(--chip);padding:2px 7px;border-radius:6px}
+.b-meta .rol{text-transform:uppercase;letter-spacing:.05em}
+.b-pag{border:1px solid var(--rule);background:none;color:var(--brass);border-radius:6px;padding:2px 8px;font-size:.74rem;font-weight:700}
+.b-estado{margin-inline-start:auto;font-weight:700}
+.b-estado.ok{color:var(--ok)} .b-estado.fix{color:var(--fix)} .b-estado.err{color:var(--err)}
+.b-pendiente{font-size:.78rem;color:var(--fix);background:var(--fix-bg);border-radius:6px;padding:4px 8px;margin-bottom:8px}
+.texto{direction:rtl;text-align:right;font-family:"Noto Serif Hebrew",serif;line-height:1.9}
+.texto.r-cuerpo{font-size:1.5rem}
+.texto.r-secundario,.texto.r-nota,.texto.r-destacado{font-size:1.18rem}
+.texto.r-destacado{font-size:1.6rem}
+.texto.r-encabezado{font-size:1rem;color:var(--brass);font-weight:600}
+.texto.r-instruccion{direction:ltr;text-align:left;font-family:"Assistant",sans-serif;font-size:.95rem;color:var(--inst);line-height:1.5}
+.tok{border-radius:5px;padding:0 1px}
+.modo-corr .tok.editable{cursor:pointer}
+.modo-corr .tok.editable:hover{background:var(--fix-bg);box-shadow:0 0 0 1px var(--fix)}
+.tok.corr{background:var(--fix-bg);box-shadow:0 0 0 1px var(--fix)}
+.kav{font-size:.55em;color:var(--muted);vertical-align:.25em;margin:0 .15em}
+.esin{font-family:"Assistant",sans-serif;font-size:.6em;color:var(--inst);unicode-bidi:isolate;direction:ltr;display:inline-block;margin:0 .25em;vertical-align:.2em}
+.b-nota{margin-top:8px;font-size:.88rem;background:var(--err-bg);border-radius:8px;padding:8px 10px}
+.b-corrs{margin-top:8px;font-size:.85rem;color:var(--muted)}
+.b-corrs .linea{direction:rtl;text-align:right;font-family:"Noto Serif Hebrew",serif;font-size:1.05rem}
+.b-corrs del{color:var(--err)} .b-corrs ins{color:var(--ok);text-decoration:none;font-weight:600}
+.b-acciones{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.mini{border:1px solid var(--rule);background:none;color:var(--ink);border-radius:8px;padding:6px 12px;font-size:.85rem;font-weight:600}
+.mini.ok{color:var(--ok);border-color:var(--ok)} .mini.ok.activo{background:var(--ok);color:#fff}
+.mini.fix{color:var(--fix);border-color:var(--fix)} .mini.fix.activo{background:var(--fix);color:#fff}
+.mini.err{color:var(--err);border-color:var(--err)} .mini.err.activo{background:var(--err);color:#fff}
+
+/* vista de página */
+.pagina-nav{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.pagina-nav .btn{padding:6px 10px}
+.img-marco{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;overflow:auto;max-height:70vh;margin-bottom:12px}
+.img-marco img{display:block;margin:0 auto;transition:width .15s}
+.fila-pag{width:100%;display:flex;align-items:center;gap:10px;background:var(--sheet);border:1px solid var(--rule);border-inline-start:4px solid var(--rule);border-radius:10px;padding:10px 14px;margin-bottom:8px;color:var(--ink);text-align:left}
+.fila-pag[data-estado="aprobado"]{border-inline-start-color:var(--ok)}
+.fila-pag[data-estado="error"]{border-inline-start-color:var(--err)}
+.fila-pag:hover{border-color:var(--brass)}
+.fila-pag b{font-variant-numeric:tabular-nums}
+.fila-pag .resto{flex:1;font-size:.82rem;color:var(--muted)}
+
+/* modales */
+.scrim{position:fixed;inset:0;background:rgba(10,14,20,.55);z-index:40;display:flex;align-items:center;justify-content:center;padding:14px}
+.modal{background:var(--sheet);color:var(--ink);border-radius:14px;max-width:min(96vw,900px);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.35);width:100%}
+.m-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.m-head b{flex:1}
+.m-cerrar{background:none;border:0;font-size:1.5rem;line-height:1;color:var(--muted);padding:4px 8px}
+.m-body{overflow:auto;padding:12px 14px}
+.zoom-btn{border:1px solid var(--rule);background:var(--sheet);border-radius:7px;width:34px;height:30px;font-weight:700}
+.modal textarea,.modal input[type=text]{width:100%;border:1px solid var(--rule);border-radius:8px;padding:10px;background:var(--paper);color:var(--ink);font:inherit}
+.modal input.heb{direction:rtl;font-family:"Noto Serif Hebrew",serif;font-size:1.4rem}
+.m-pie{display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;border-top:1px solid var(--rule);flex-wrap:wrap}
+.palabra-orig{direction:rtl;text-align:center;font-family:"Noto Serif Hebrew",serif;font-size:1.6rem;background:var(--chip);border-radius:8px;padding:8px;margin-bottom:10px}
+.prop-lista{max-height:200px;overflow:auto;border:1px solid var(--rule);border-radius:8px;margin-top:10px;font-size:.85rem}
+.prop-lista div{padding:6px 10px;border-bottom:1px solid var(--rule)}
+.prop-lista div:last-child{border-bottom:0}
+.prop-lista .ctx{direction:rtl;font-family:"Noto Serif Hebrew",serif;color:var(--muted)}
+.export-fila{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+footer.pie{max-width:880px;margin:0 auto;padding:0 16px 30px;font-size:.78rem;color:var(--muted)}
+.cargando{text-align:center;color:var(--muted);padding:40px 0}
+</style>
+</head>
+<body>
+
+<header class="bar" id="barra" hidden>
+  <div class="bar-fila">
+    <h1>Revisión del Sidur Maguén David</h1>
+    <button id="btnQuien" class="quien" title="Sesión">👤 <span id="quienNombre">—</span></button>
+  </div>
+  <div class="sub" id="subtitulo">Cotejo rabínico del texto extraído</div>
+  <div class="prog"><i id="progGlobal" style="width:0%"></i></div>
+</header>
+
+<main id="app"><div class="cargando">Cargando…</div></main>
+<footer class="pie" id="pie" hidden>Sidur Maguén David, 5.ª ed. (2018) · Los marcadores <span dir="rtl">⟪יהוה⟫</span> y <span dir="rtl">⟦יאהדונהי⟧</span> representan la ligadura del Shem y la kavaná del libro. Al corregir una palabra, la corrección puede aplicarse a todos los lugares del sidur donde aparece idéntica.</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+"use strict";
+/* ================= conexión ================= */
+if (!window.CONFIG || !CONFIG.SUPABASE_URL) {
+  document.getElementById('app').innerHTML =
+    '<div class="aviso malo">Falta configurar <b>config.js</b> con los datos del proyecto Supabase.</div>';
+  throw new Error('sin config');
+}
+const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+
+/* ================= estado global ================= */
+let D = null;                    // dataset (bloques, paginas, secciones_paginas)
+const M = {};                    // ref -> marca
+const SEC = {};                  // sec -> fila secciones
+let YO = { id:null, nombre:'', admin:false };
+let VISTA = { tipo:'home' };
+let soloPend = false, modoCorr = null, zoomW = 100;
+const urlPag = {};               // pag -> signed URL cacheada
+
+const SECCIONES_BLOQUES = [
+  ["zemirot","זמירות","Zemirot · Pesuké deZimrá"],
+  ["birkot_shema","ברכות קריאת שמע","Berajot del Shemá"],
+  ["shema","קריאת שמע","Shemá"],
+  ["emet","אמת ויציב","Emet veYatzib · Gueulá"],
+  ["amida","עמידה","Amidá"],
+  ["tajanun","תחנון","Tajanún"],
+  ["tora","קריאת התורה","Lectura de la Torá"],
+  ["hagomel","ברכת הגומל","Birkat Hagomel"],
+  ["uba_letzion","אשרי ובא לציון","Ashré y Ubá Letzión"],
+  ["shir_shel_yom","שיר של יום","Shir shel yom"],
+  ["ketoret","פיטום הקטורת","Pitum Haketóret"],
+  ["sium","עלינו לשבח","Cierre · Alenu"],
+  ["ajar_hatefila","אחר התפילה","Después de la tefilá"],
+];
+const secDe = id => id.split('.')[0];
+let porSecBloques = {};
+
+/* ================= arranque / sesión ================= */
+async function arranque(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if (!session) { pintaLogin(); return; }
+  await cargaTodo(session.user);
+}
+sb.auth.onAuthStateChange((ev, session)=>{
+  if (ev==='SIGNED_OUT'){ location.reload(); }
+});
+
+function pintaLogin(msj){
+  document.getElementById('barra').hidden = true;
+  document.getElementById('pie').hidden = true;
+  document.getElementById('app').innerHTML = `
+  <div class="login">
+    <h2>Revisión del Sidur</h2>
+    <p>Comunidad Maguén David · acceso solo para revisores autorizados.</p>
+    <label for="inMail">Correo</label>
+    <input id="inMail" type="email" autocomplete="username">
+    <label for="inPass">Contraseña</label>
+    <input id="inPass" type="password" autocomplete="current-password">
+    <button class="btn primario" id="btnEntrar">Entrar</button>
+    <div class="error" id="loginError">${msj||''}</div>
+  </div>`;
+  const entra = async ()=>{
+    const email=document.getElementById('inMail').value.trim();
+    const password=document.getElementById('inPass').value;
+    document.getElementById('loginError').textContent='';
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error){ document.getElementById('loginError').textContent='No se pudo entrar: revise el correo y la contraseña.'; return; }
+    await cargaTodo(data.user);
+  };
+  document.getElementById('btnEntrar').onclick=entra;
+  document.getElementById('inPass').addEventListener('keydown',e=>{ if(e.key==='Enter') entra(); });
+}
+
+async function cargaTodo(user){
+  document.getElementById('app').innerHTML='<div class="cargando">Cargando el texto del sidur…</div>';
+  YO.id = user.id;
+  const { data: perfil } = await sb.from('perfiles').select('*').eq('id', user.id).maybeSingle();
+  YO.nombre = (perfil && perfil.nombre) || (user.user_metadata&&user.user_metadata.nombre) || user.email.split('@')[0];
+  YO.admin  = !!(perfil && perfil.admin);
+
+  const { data: blob, error: e1 } = await sb.storage.from('datos').download('revision-datos.json');
+  if (e1){ pintaLogin('Sesión válida pero sin acceso a los datos. Avise al administrador.'); return; }
+  D = JSON.parse(await blob.text());
+  porSecBloques = {};
+  for (const b of D.bloques) (porSecBloques[secDe(b.id)] = porSecBloques[secDe(b.id)] || []).push(b);
+
+  const { data: marcas } = await sb.from('marcas').select('*');
+  (marcas||[]).forEach(m=>M[m.ref]=m);
+  const { data: secs } = await sb.from('secciones').select('*');
+  (secs||[]).forEach(s=>SEC[s.sec]=s);
+
+  document.getElementById('barra').hidden=false;
+  document.getElementById('pie').hidden=false;
+  pinta();
+}
+
+/* ================= persistencia ================= */
+async function guardaMarca(ref, campos){
+  const doc = Object.assign({ ref, nota:'', corr:[], estado:'aprobado' }, M[ref]||{}, campos,
+                            { por: YO.id, por_nombre: YO.nombre, ts: new Date().toISOString() });
+  delete doc.id;
+  M[ref]=doc; pinta();
+  const { error } = await sb.from('marcas').upsert(doc);
+  if (error) avisa('No se pudo guardar en línea: '+(error.message||''));
+}
+async function borraMarca(ref){
+  const m=M[ref];
+  if (m && m.por!==YO.id && !YO.admin){ avisa('Esta marca es de otro revisor; solo el administrador puede quitarla.'); return; }
+  delete M[ref]; pinta();
+  await sb.from('marcas').delete().eq('ref', ref);
+}
+async function liberaSeccion(sec){
+  SEC[sec]={sec, estado:'liberada', por:YO.id, por_nombre:YO.nombre, ts:new Date().toISOString()}; pinta();
+  const { error } = await sb.from('secciones').upsert(SEC[sec]);
+  if (error) avisa('No se pudo guardar la liberación: '+(error.message||''));
+}
+async function reabreSeccion(sec){
+  if (!YO.admin){ avisa('Solo el administrador puede reabrir una sección liberada.'); return; }
+  delete SEC[sec]; pinta();
+  await sb.from('secciones').delete().eq('sec', sec);
+}
+
+/* ================= helpers de texto ================= */
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function tokenHTML(t){
+  let h = esc(t);
+  h = h.replace(/⟪יהוה⟫/g,'<b>יהוה</b>');
+  h = h.replace(/⟦יאהדונהי⟧/g,'<span class="kav">יאהדונהי</span>');
+  h = h.replace(/«(.*?)»/g,'<span class="esin">$1</span>');
+  return h;
+}
+const esMarcador = t => t.includes('⟪') || t.includes('⟦');
+function textoOriginal(ref){
+  if (ref.startsWith('B:')) { const b=D.bloques.find(x=>x.id===ref.slice(2)); return b?b.texto:''; }
+  if (ref.startsWith('L:')) { const [p,i]=ref.slice(2).split('.');
+    const l=(D.paginas[p]||[]).find(x=>x.i===+i); return l?l.texto:''; }
+  return '';
+}
+function textoConCorr(ref){
+  const m=M[ref]; const t=textoOriginal(ref);
+  if(!m||!m.corr||!m.corr.length) return t;
+  const toks=t.split(' ');
+  for(const c of m.corr) if(toks[c.i]===c.de) toks[c.i]=c.a;
+  return toks.join(' ');
+}
+
+/* corpus para propagación: token exacto -> [{ref, i}] */
+let CORPUS=null;
+function corpus(){
+  if (CORPUS) return CORPUS;
+  CORPUS={};
+  const mete=(ref,texto)=>texto.split(' ').forEach((t,i)=>{
+    if(!t||esMarcador(t))return; (CORPUS[t]=CORPUS[t]||[]).push({ref,i});
+  });
+  for(const b of D.bloques) mete('B:'+b.id, b.texto);
+  for(const [p,ls] of Object.entries(D.paginas)) for(const l of ls) mete(`L:${p}.${l.i}`, l.texto);
+  return CORPUS;
+}
+function contexto(ref,i){
+  const toks=textoOriginal(ref).split(' ');
+  return toks.slice(Math.max(0,i-3), i+4).join(' ');
+}
+function nombreRef(ref){
+  if(ref.startsWith('B:')) return ref.slice(2);
+  if(ref.startsWith('L:')){ const p=+ref.slice(2).split('.')[0]; return `pág. ${p-4}, línea ${ref.split('.')[1]}`; }
+  return ref;
+}
+
+/* ================= conteos ================= */
+function estadoRef(ref){ return M[ref] ? M[ref].estado : null; }
+function cuentaRefs(refs){
+  const c={total:refs.length, ok:0, fix:0, err:0};
+  for(const r of refs){ const e=estadoRef(r);
+    if(e==='aprobado')c.ok++; else if(e==='corregido')c.fix++; else if(e==='error')c.err++; }
+  c.hechos=c.ok+c.fix; c.pend=c.total-c.hechos-c.err; return c;
+}
+function refsDeSeccion(sec){
+  const sp=D.secciones_paginas.find(s=>s.key===sec);
+  if(sp){ const out=[]; for(let p=sp.rango[0];p<=sp.rango[1];p++) if(D.paginas[String(p)]) out.push('P:'+p); return out; }
+  return (porSecBloques[sec]||[]).map(b=>'B:'+b.id);
+}
+function dudasLineas(sp){
+  let n=0;
+  for(let p=sp.rango[0];p<=sp.rango[1];p++)
+    for(const l of (D.paginas[String(p)]||[]))
+      if(estadoRef(`L:${p}.${l.i}`)==='error') n++;
+  return n;
+}
+
+/* ================= render raíz ================= */
+const app=document.getElementById('app');
+function pinta(){
+  if(!D) return;
+  const todos=[...D.bloques.map(b=>'B:'+b.id)];
+  for(const sp of D.secciones_paginas) todos.push(...refsDeSeccion(sp.key));
+  const tot=cuentaRefs(todos);
+  document.getElementById('progGlobal').style.width=(100*tot.hechos/tot.total)+'%';
+  document.getElementById('subtitulo').textContent=`${tot.hechos} de ${tot.total} unidades revisadas`;
+  document.getElementById('quienNombre').textContent=YO.nombre+(YO.admin?' · admin':'');
+  if(VISTA.tipo==='home') pintaHome();
+  else if(VISTA.tipo==='bloques') pintaBloques(VISTA.sec);
+  else if(VISTA.tipo==='paginas') pintaPaginas(VISTA.sec);
+  else if(VISTA.tipo==='pagina') pintaPagina(VISTA.sec, VISTA.pag);
+}
+document.getElementById('btnQuien').onclick=()=>{
+  modalConfirma(`Sesión de ${YO.nombre}. ¿Cerrar sesión?`, 'Cerrar sesión', ()=>sb.auth.signOut());
+};
+
+function tarjeta(sec, he, es, c, extraDudas){
+  const lib=SEC[sec]&&SEC[sec].estado==='liberada';
+  const err=c.err+(extraDudas||0);
+  const chip = lib?['lib','LIBERADA'] : c.hechos+err===0?['pend','Pendiente'] : (c.pend===0&&err===0)?['lista','Lista para liberar'] : ['curso','En revisión'];
+  return `<button class="seccion-card" data-sec="${sec}">
+    <span class="sc-main">
+      <span class="sc-nombre">${he}</span><span class="sc-es">${es}</span>
+      <span class="sc-prog" aria-hidden="true">
+        <i class="p-ok" style="width:${100*c.ok/c.total}%"></i>
+        <i class="p-fix" style="width:${100*c.fix/c.total}%"></i>
+        <i class="p-err" style="width:${100*err/c.total}%"></i></span>
+      <span class="sc-num">${c.hechos}/${c.total} revisados${err?` · ${err} con duda`:''}</span>
+    </span><span class="chip ${chip[0]}">${chip[1]}</span></button>`;
+}
+
+function pintaHome(){
+  let h=`<div class="aviso">Kevod haRab: en cada bloque o línea puede <b>aprobar ✓</b>, <b>corregir ✎</b> (tocando la palabra) o <b>marcar una duda ⚠</b>. El número de página abre la imagen del libro para cotejar. Al corregir una palabra, la corrección puede aplicarse a <b>todos los lugares donde aparece idéntica</b>. Al completar una sección, libérela.</div>`;
+  h+='<h3 class="grupo">Shajarit de entre semana · por bloques</h3>';
+  for(const [sec,he,es] of SECCIONES_BLOQUES){
+    const bs=porSecBloques[sec]||[]; if(!bs.length) continue;
+    h+=tarjeta(sec, he, es, cuentaRefs(bs.map(b=>'B:'+b.id)));
+  }
+  h+='<h3 class="grupo">Demás tefilot · por página del libro</h3>';
+  for(const sp of D.secciones_paginas){
+    h+=tarjeta(sp.key, sp.he, `${sp.nombre} · págs. impresas ${sp.rango[0]-4}–${sp.rango[1]-4}`,
+               cuentaRefs(refsDeSeccion(sp.key)), dudasLineas(sp));
+  }
+  h+=`<div class="export-fila"><button class="btn" id="btnExporta">⬇ Exportar revisión</button></div>`;
+  app.innerHTML=h;
+  app.querySelectorAll('.seccion-card').forEach(el=>el.onclick=()=>{
+    const sec=el.dataset.sec; modoCorr=null;
+    VISTA = D.secciones_paginas.some(s=>s.key===sec) ? {tipo:'paginas',sec} : {tipo:'bloques',sec};
+    window.scrollTo(0,0); pinta();
+  });
+  document.getElementById('btnExporta').onclick=exporta;
+}
+
+/* ================= vista: sección por bloques ================= */
+function cabeceraSeccion(sec, titulo, subt, c, extraDudas){
+  const lib=SEC[sec]&&SEC[sec].estado==='liberada';
+  const err=c.err+(extraDudas||0);
+  let h=`<button class="volver">← Secciones</button>
+  <div class="sec-head"><h2>${titulo}</h2>
+    <label class="filtro"><input type="checkbox" id="fPend" ${soloPend?'checked':''}> solo pendientes</label>
+    ${lib?'':`<button class="btn liberar" id="btnLiberar" ${c.pend===0&&err===0?'':'disabled'}>Liberar sección ✓</button>`}
+  </div>
+  <div class="sc-num" style="margin-bottom:10px">${subt} · ${c.hechos}/${c.total} revisados${err?` · ${err} con duda`:''}${c.pend?` · ${c.pend} pendientes`:''}</div>`;
+  if(lib) h+=`<div class="lib-banner">✓ Sección <b>liberada</b>${SEC[sec].por_nombre?` por <b>${esc(SEC[sec].por_nombre)}</b>`:''} · ${new Date(SEC[sec].ts).toLocaleDateString()}.${YO.admin?' <button class="btn" id="btnReabrir">Reabrir</button>':''}</div>`;
+  return h;
+}
+function ataCabecera(sec, nombreEs){
+  app.querySelector('.volver').onclick=()=>{VISTA={tipo:'home'}; modoCorr=null; window.scrollTo(0,0); pinta();};
+  const f=document.getElementById('fPend'); if(f) f.onchange=e=>{soloPend=e.target.checked; pinta();};
+  const bl=document.getElementById('btnLiberar'); if(bl) bl.onclick=()=>
+    modalConfirma(`¿Liberar la sección «${nombreEs}»? Con esto el Rabinato la da por revisada.`, 'Liberar', ()=>liberaSeccion(sec));
+  const br=document.getElementById('btnReabrir'); if(br) br.onclick=()=>reabreSeccion(sec);
+}
+
+function htmlUnidad(ref, texto, rol, idioma, meta, lib, pendienteNota){
+  const est=estadoRef(ref); if(soloPend && est) return '';
+  const m=M[ref]||{};
+  const toks=textoConCorr(ref).split(' ');
+  const corrIdx=new Set((m.corr||[]).map(x=>x.i));
+  const cuerpo=toks.map((t,i)=>
+    `<span class="tok${esMarcador(t)?'':' editable'}${corrIdx.has(i)?' corr':''}" data-i="${i}">${tokenHTML(t)}</span>`).join(' ');
+  const enCorr=modoCorr===ref;
+  return `<div class="bloque${enCorr?' modo-corr':''}" data-estado="${est||'pendiente'}" data-ref="${esc(ref)}">
+    <div class="b-meta">${meta}
+      ${est?`<span class="b-estado ${est==='aprobado'?'ok':est==='corregido'?'fix':'err'}">${est==='aprobado'?'✓ aprobado':est==='corregido'?'✎ corregido':'⚠ duda'}${m.por_nombre?`<span class="firma"> · ${esc(m.por_nombre)}</span>`:''}</span>`:''}
+    </div>
+    ${pendienteNota?`<div class="b-pendiente">Nota del equipo: ${esc(pendienteNota)}</div>`:''}
+    <div class="texto r-${rol}" lang="${idioma}">${cuerpo}</div>
+    ${m.nota?`<div class="b-nota"><b>Duda${m.por_nombre?` de ${esc(m.por_nombre)}`:''}:</b> ${esc(m.nota)}</div>`:''}
+    ${(m.corr||[]).length?`<div class="b-corrs"><b>Correcciones:</b>${m.corr.map(x=>`<div class="linea"><del>${tokenHTML(x.de)}</del> ← <ins>${tokenHTML(x.a)}</ins>${x.grupo?' <span class="firma">(aplicada en serie)</span>':''}</div>`).join('')}</div>`:''}
+    ${lib?'':`<div class="b-acciones">
+      <button class="mini ok${est==='aprobado'?' activo':''}" data-acc="aprobar">✓ Aprobar</button>
+      <button class="mini fix${enCorr?' activo':''}" data-acc="corregir">${enCorr?'Terminar corrección':'✎ Corregir palabra'}</button>
+      <button class="mini err${est==='error'?' activo':''}" data-acc="duda">⚠ Duda</button>
+      ${est||m.nota?`<button class="mini" data-acc="limpiar">Quitar marca</button>`:''}
+    </div>`}
+  </div>`;
+}
+function ataUnidades(lib){
+  app.querySelectorAll('.bloque').forEach(el=>{
+    const ref=el.dataset.ref;
+    el.querySelectorAll('[data-acc]').forEach(btn=>btn.onclick=()=>accion(ref, btn.dataset.acc));
+    el.querySelectorAll('.tok.editable').forEach(tk=>tk.onclick=()=>{
+      if(modoCorr===ref) modalPalabra(ref, +tk.dataset.i); });
+    el.querySelectorAll('.b-pag').forEach(p=>p.onclick=()=>modalImagen(+p.dataset.pag));
+  });
+}
+function accion(ref, acc){
+  const m=M[ref]||{};
+  if(acc==='aprobar') guardaMarca(ref,{estado:'aprobado'});
+  else if(acc==='corregir'){ modoCorr = modoCorr===ref?null:ref; pinta(); if(modoCorr) avisa('Toque la palabra que desea corregir.'); }
+  else if(acc==='duda') modalNota(ref);
+  else if(acc==='limpiar') borraMarca(ref);
+}
+
+function pintaBloques(sec){
+  const meta=SECCIONES_BLOQUES.find(x=>x[0]===sec); const bs=porSecBloques[sec]||[];
+  const c=cuentaRefs(bs.map(b=>'B:'+b.id)); const lib=SEC[sec]&&SEC[sec].estado==='liberada';
+  let h=cabeceraSeccion(sec, meta[1], meta[2], c, 0);
+  for(const b of bs){
+    const metaLinea=`<span class="id">${esc(b.id)}</span><span class="rol">${b.rol}</span>`+
+      b.paginas.map(p=>`<button class="b-pag" data-pag="${p}">pág. ${p-4}</button>`).join('');
+    h+=htmlUnidad('B:'+b.id, b.texto, b.rol, b.idioma, metaLinea, lib, b.pendiente);
+  }
+  app.innerHTML=h; ataCabecera(sec, meta[2]); ataUnidades(lib);
+}
+
+/* ================= vistas: secciones por página ================= */
+function pintaPaginas(sec){
+  const sp=D.secciones_paginas.find(s=>s.key===sec);
+  const refs=refsDeSeccion(sec); const c=cuentaRefs(refs);
+  const dudasL=dudasLineas(sp);
+  let h=cabeceraSeccion(sec, sp.he, sp.nombre, c, dudasL);
+  for(let p=sp.rango[0]; p<=sp.rango[1]; p++){
+    if(!D.paginas[String(p)]) continue;
+    const est=estadoRef('P:'+p); if(soloPend && est==='aprobado') continue;
+    const m=M['P:'+p]||{};
+    let nL=0, nCorr=0, nDud=0;
+    for(const l of D.paginas[String(p)]){ nL++;
+      const lm=M[`L:${p}.${l.i}`]; if(lm){ if((lm.corr||[]).length)nCorr++; if(lm.estado==='error')nDud++; } }
+    h+=`<button class="fila-pag" data-pag="${p}" data-estado="${est||''}">
+      <b>pág. ${p-4}</b>
+      <span class="resto">${nL} líneas${nCorr?` · ✎ ${nCorr} corregidas`:''}${nDud?` · ⚠ ${nDud} con duda`:''}</span>
+      ${est==='aprobado'?`<span class="b-estado ok">✓${m.por_nombre?` ${esc(m.por_nombre)}`:''}</span>`:est==='error'?'<span class="b-estado err">⚠</span>':''}
+    </button>`;
+  }
+  app.innerHTML=h; ataCabecera(sec, sp.nombre);
+  app.querySelectorAll('.fila-pag').forEach(el=>el.onclick=()=>{
+    VISTA={tipo:'pagina', sec, pag:+el.dataset.pag}; modoCorr=null; window.scrollTo(0,0); pinta(); });
+}
+
+async function urlDePagina(p){
+  if(urlPag[p]) return urlPag[p];
+  const { data, error } = await sb.storage.from('paginas').createSignedUrl(`pag_${String(p).padStart(3,'0')}.png`, 3600);
+  if(error) return null;
+  return urlPag[p]=data.signedUrl;
+}
+
+function pintaPagina(sec, pag){
+  const sp=D.secciones_paginas.find(s=>s.key===sec);
+  const lineas=D.paginas[String(pag)]||[];
+  const est=estadoRef('P:'+pag); const lib=SEC[sec]&&SEC[sec].estado==='liberada';
+  let h=`<button class="volver">← ${esc(sp.nombre)}</button>
+  <div class="pagina-nav">
+    <button class="btn" id="pAnt" ${pag<=sp.rango[0]?'disabled':''}>‹ pág. ${pag-5}</button>
+    <h2 style="margin:0;flex:1;text-align:center;font-size:1.2rem">Página impresa ${pag-4}</h2>
+    <button class="btn" id="pSig" ${pag>=sp.rango[1]?'disabled':''}>pág. ${pag-3} ›</button>
+  </div>
+  <div class="pagina-nav">
+    <button class="zoom-btn" id="zMenos">−</button><button class="zoom-btn" id="zMas">+</button>
+    ${lib?'':`<button class="mini ok${est==='aprobado'?' activo':''}" id="pAprueba">✓ Aprobar página completa</button>
+    <button class="mini err${est==='error'?' activo':''}" id="pDuda">⚠ Duda de página</button>
+    ${est?'<button class="mini" id="pLimpia">Quitar marca</button>':''}`}
+  </div>
+  <div class="img-marco"><img id="imgPag" alt="Página impresa ${pag-4} del sidur" style="width:${zoomW}%"></div>`;
+  const mp=M['P:'+pag];
+  if(mp&&mp.nota) h+=`<div class="b-nota" style="margin-bottom:10px"><b>Duda de ${esc(mp.por_nombre||'')}:</b> ${esc(mp.nota)}</div>`;
+  for(const l of lineas){
+    const meta=`<span class="id">línea ${l.i}</span><span class="rol">${l.rol}</span>`;
+    h+=htmlUnidad(`L:${pag}.${l.i}`, l.texto, l.rol==='instruccion'?'instruccion':(l.rol==='destacado'?'destacado':l.rol==='nota'?'nota':'cuerpo'), l.idioma, meta, lib, null);
+  }
+  app.innerHTML=h;
+  app.querySelector('.volver').onclick=()=>{VISTA={tipo:'paginas',sec}; modoCorr=null; pinta();};
+  document.getElementById('pAnt').onclick=()=>{VISTA.pag--; window.scrollTo(0,0); pinta();};
+  document.getElementById('pSig').onclick=()=>{VISTA.pag++; window.scrollTo(0,0); pinta();};
+  const img=document.getElementById('imgPag');
+  urlDePagina(pag).then(u=>{ if(u) img.src=u; });
+  document.getElementById('zMas').onclick=()=>{zoomW=Math.min(300,zoomW+25); img.style.width=zoomW+'%';};
+  document.getElementById('zMenos').onclick=()=>{zoomW=Math.max(50,zoomW-25); img.style.width=zoomW+'%';};
+  const pa=document.getElementById('pAprueba'); if(pa) pa.onclick=()=>guardaMarca('P:'+pag,{estado:'aprobado'});
+  const pd=document.getElementById('pDuda'); if(pd) pd.onclick=()=>modalNota('P:'+pag);
+  const pl=document.getElementById('pLimpia'); if(pl) pl.onclick=()=>borraMarca('P:'+pag);
+  ataUnidades(lib);
+}
+
+/* ================= modales ================= */
+const scrim=document.getElementById('scrim');
+function abreModal(html){ scrim.innerHTML=html; scrim.hidden=false;
+  scrim.onclick=e=>{ if(e.target===scrim) cierraModal(); };
+  scrim.querySelectorAll('.m-cerrar').forEach(x=>x.onclick=cierraModal);
+  document.addEventListener('keydown', escCierra); }
+function cierraModal(){ scrim.hidden=true; scrim.innerHTML=''; document.removeEventListener('keydown', escCierra); }
+function escCierra(e){ if(e.key==='Escape') cierraModal(); }
+function avisa(msj){ const d=document.createElement('div'); d.className='aviso';
+  d.style.cssText='position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:60;box-shadow:var(--sombra);max-width:90vw';
+  d.textContent=msj; document.body.appendChild(d); setTimeout(()=>d.remove(), 3200); }
+
+function modalImagen(pag){
+  abreModal(`<div class="modal"><div class="m-head"><b>Página impresa ${pag-4}</b>
+    <button class="zoom-btn" id="zMenos2">−</button><button class="zoom-btn" id="zMas2">+</button>
+    <button class="m-cerrar" aria-label="Cerrar">×</button></div>
+    <div class="m-body"><img id="imgModal" alt="Página impresa ${pag-4}" style="width:${zoomW}%"></div></div>`);
+  const img=document.getElementById('imgModal');
+  urlDePagina(pag).then(u=>{ if(u) img.src=u; else img.alt='No se pudo cargar la imagen'; });
+  document.getElementById('zMas2').onclick=()=>{zoomW=Math.min(300,zoomW+25); img.style.width=zoomW+'%';};
+  document.getElementById('zMenos2').onclick=()=>{zoomW=Math.max(50,zoomW-25); img.style.width=zoomW+'%';};
+}
+
+function modalNota(ref){
+  const m=M[ref]||{};
+  abreModal(`<div class="modal" style="max-width:520px">
+    <div class="m-head"><b>Duda o error · ${esc(nombreRef(ref))}</b><button class="m-cerrar">×</button></div>
+    <div class="m-body"><label style="font-size:.85rem;color:var(--muted)">Describa la duda o el error; el equipo lo revisará contra el libro:</label>
+      <textarea id="inNota" rows="4">${esc(m.nota||'')}</textarea></div>
+    <div class="m-pie"><button class="btn primario" id="btnGuardaNota">Guardar</button></div></div>`);
+  const ta=document.getElementById('inNota'); ta.focus();
+  document.getElementById('btnGuardaNota').onclick=()=>{
+    const v=ta.value.trim();
+    if(v) guardaMarca(ref,{estado:'error', nota:v});
+    else if(m.nota) guardaMarca(ref,{estado:(m.corr||[]).length?'corregido':'aprobado', nota:''});
+    cierraModal(); };
+}
+
+function modalConfirma(msj, verbo, fn){
+  abreModal(`<div class="modal" style="max-width:440px">
+    <div class="m-head"><b>Confirmar</b><button class="m-cerrar">×</button></div>
+    <div class="m-body">${esc(msj)}</div>
+    <div class="m-pie"><button class="btn" id="btnNo">Cancelar</button>
+      <button class="btn primario" id="btnSi">${esc(verbo)}</button></div></div>`);
+  document.getElementById('btnNo').onclick=cierraModal;
+  document.getElementById('btnSi').onclick=()=>{ fn(); cierraModal(); };
+}
+
+/* ---- corrección de palabra con PROPAGACIÓN ---- */
+function modalPalabra(ref, i){
+  const original=textoOriginal(ref).split(' ')[i];
+  const actual=textoConCorr(ref).split(' ')[i];
+  const m=M[ref]||{}; const previa=(m.corr||[]).find(x=>x.i===i);
+  const iguales=(corpus()[original]||[]).filter(o=>!(o.ref===ref&&o.i===i));
+  abreModal(`<div class="modal" style="max-width:560px">
+    <div class="m-head"><b>Corregir palabra · ${esc(nombreRef(ref))}</b><button class="m-cerrar">×</button></div>
+    <div class="m-body">
+      <div class="palabra-orig">${tokenHTML(original)}</div>
+      <label style="font-size:.85rem;color:var(--muted)">Texto corregido:</label>
+      <input type="text" class="heb" id="inPalabra" value="${esc(actual)}" dir="rtl">
+      ${iguales.length?`<label class="filtro" style="margin-top:12px"><input type="checkbox" id="chkProp" checked>
+        Aplicar también a los <b>&nbsp;${iguales.length}&nbsp;</b> lugares donde aparece idéntica</label>
+        <div class="prop-lista">${iguales.slice(0,60).map(o=>`<div><b>${esc(nombreRef(o.ref))}</b><div class="ctx">…${tokenHTML(contexto(o.ref,o.i))}…</div></div>`).join('')}${iguales.length>60?`<div>… y ${iguales.length-60} más</div>`:''}</div>`:''}
+    </div>
+    <div class="m-pie">
+      ${previa?`<button class="btn" id="btnQuitaCorr">Restaurar original</button>`:''}
+      <button class="btn primario" id="btnGuardaCorr">Guardar corrección</button>
+    </div></div>`);
+  const inp=document.getElementById('inPalabra'); inp.focus(); inp.select();
+  document.getElementById('btnGuardaCorr').onclick=async ()=>{
+    const v=inp.value.trim(); if(!v||v===original){ cierraModal(); return; }
+    const prop=document.getElementById('chkProp'); const enSerie=prop&&prop.checked&&iguales.length;
+    const grupo=enSerie? (ref+'#'+i+'#'+Date.now()) : null;
+    cierraModal();
+    await aplicaCorr(ref, i, original, v, grupo);
+    if(enSerie){
+      let n=0;
+      for(const o of iguales){ await aplicaCorr(o.ref, o.i, original, v, grupo); n++; }
+      avisa(`Corrección aplicada aquí y en ${n} lugares más.`);
+    }
+  };
+  const q=document.getElementById('btnQuitaCorr'); if(q) q.onclick=async ()=>{
+    cierraModal();
+    if(previa&&previa.grupo){
+      modalConfirma('Esta corrección se aplicó en serie. ¿Restaurar el original en TODOS los lugares del grupo?', 'Restaurar todos',
+        async ()=>{ for(const [r2,m2] of Object.entries(M)){
+            const resto=(m2.corr||[]).filter(x=>x.grupo!==previa.grupo);
+            if(resto.length!==(m2.corr||[]).length)
+              await guardaMarca(r2,{corr:resto, estado:resto.length?'corregido':(m2.nota?'error':'aprobado')});
+          } });
+    } else {
+      const resto=(m.corr||[]).filter(x=>x.i!==i);
+      await guardaMarca(ref,{corr:resto, estado:resto.length?'corregido':(m.nota?'error':'aprobado')});
+    }
+  };
+  inp.onkeydown=e=>{ if(e.key==='Enter') document.getElementById('btnGuardaCorr').click(); };
+}
+async function aplicaCorr(ref, i, de, a, grupo){
+  const m=M[ref]||{};
+  const corr=(m.corr||[]).filter(x=>x.i!==i); corr.push({i, de, a, grupo});
+  await guardaMarca(ref,{estado:'corregido', corr, nota:m.nota||''});
+}
+
+/* ================= exportar ================= */
+function exporta(){
+  const data={ fecha:new Date().toISOString(), edicion:D.edicion_fuente,
+    secciones:SEC, marcas:M };
+  const blob=new Blob([JSON.stringify(data,null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='revision-sidur.json'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+arranque();
+</script>
+</body>
+</html>
