@@ -19,7 +19,7 @@ begin
   insert into perfiles (id, nombre, admin)
   values (new.id,
           coalesce(new.raw_user_meta_data->>'nombre', split_part(new.email,'@',1)),
-          new.email = 'ADMIN_EMAIL')   -- <== PON AQUÍ TU CORREO, entre comillas
+          new.email = 'jmarcosa@gmail.com')   -- administrador
   on conflict (id) do nothing;
   return new;
 end $$;
